@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dream Home Builder Wizard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="centered" id="welcome-screen">
+    <div class="wizard-title">Welcome to Your Dream Home</div>
+    <div class="wizard-desc">
+      Let's start the journey of building your perfect home. Answer a few simple questions, and we'll guide you through creating a personalized home plan, complete with cost estimates and 3D visualizations.
+    </div>
+    <button class="wizard-btn" id="start-btn">Start Building</button>
+  </div>
+
+  <!-- Wizard Steps -->
+  <div class="wizard-step" id="step-style">
+    <div class="wizard-title">Choose Your Architectural Style</div>
+    <div class="wizard-options" id="style-options"></div>
+    <button class="wizard-btn" id="to-step-bedrooms">Next</button>
+  </div>
+  <div class="wizard-step" id="step-bedrooms">
+    <div class="wizard-title">How many bedrooms do you need?</div>
+    <div class="wizard-options" id="bedroom-options"></div>
+    <button class="wizard-btn" id="to-step-features">Next</button>
+  </div>
+  <div class="wizard-step" id="step-features">
+    <div class="wizard-title">Select Desired Features</div>
+    <div class="wizard-options" id="feature-options"></div>
+    <button class="wizard-btn" id="to-step-size">Next</button>
+  </div>
+  <div class="wizard-step" id="step-size">
+    <div class="wizard-title">Preferred Home Size</div>
+    <div class="wizard-options" id="size-options"></div>
+    <button class="wizard-btn" id="to-step-special">Next</button>
+  </div>
+  <div class="wizard-step" id="step-special">
+    <div class="wizard-title">Any Special Features?</div>
+    <div class="wizard-options" id="special-options"></div>
+    <button class="wizard-btn" id="to-hourglass">See Results</button>
+  </div>
+
+  <!-- Hourglass Loader -->
+  <div class="wizard-step" id="hourglass-step">
+    <div class="wizard-title">Building Your Dream Home Plan...</div>
+    <div class="hourglass"><div></div></div>
+    <div style="margin-top:24px;">Personalizing your gallery and estimate. Please wait...</div>
+  </div>
+
+  <!-- Gallery Section -->
+  <div class="gallery-section" id="gallery-section">
+    <div class="wizard-title">Your Personalized Home Gallery</div>
+    <div id="gallery"></div>
+    <button class="gallery-btn" id="to-address">Continue</button>
+  </div>
+
+  <!-- Address/Survey Section -->
+  <div class="address-section" id="address-section">
+    <div class="wizard-title">Property Details</div>
+    <label for="address-input">Enter your property address (Florida only):</label>
+    <input type="text" id="address-input" placeholder="123 Main St, Orlando, FL">
+    <div style="margin:12px 0;">or</div>
+    <label for="survey-upload">Upload a property survey (PDF or image):</label>
+    <input type="file" id="survey-upload" accept=".pdf,image/*">
+    <button class="wizard-btn" id="to-estimate">Next</button>
+  </div>
+
+  <!-- Estimate Section -->
+  <div class="estimate-section" id="estimate-section">
+    <div class="wizard-title">Estimated Cost & Draw Schedule</div>
+    <div id="estimate-output"></div>
+    <button class="gallery-btn" id="to-instructions">How to Get 2D Plans</button>
+  </div>
+
+  <!-- Instructions for Python Integration -->
+  <div class="instructions" id="instructions-section" style="display:none;">
+    <h3>How to Generate 2D Plans & Elevations</h3>
+    <ol>
+      <li>Download the provided Python script (see below).</li>
+      <li>Install <b>matplotlib</b> and <b>numpy</b> if you don't have them:<br><code>pip install matplotlib numpy</code></li>
+      <li>Open the script, set your chosen house model ID and details, and run it locally.</li>
+      <li>The script will generate PNG images of the floor plan and elevations, plus a detailed cost estimate and Florida Building Code details.</li>
+    </ol>
+    <p><b>Note:</b> For real submissions, always order official schematics from Matterport or your architect.</p>
+    <pre id="python-script" style="background:#222;color:#fff;padding:12px 8px;border-radius:8px;overflow-x:auto;font-size:0.95em;"></pre>
+  </div>
+
+  <!-- Furniture Placement Modal -->
+  <div id="furniture-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(30,20,60,0.98);z-index:1000;align-items:center;justify-content:center;flex-direction:column;">
+    <div style="max-width:900px;width:95vw;height:90vh;position:relative;display:flex;flex-direction:column;align-items:center;">
+      <button id="close-furniture-modal" style="position:absolute;top:10px;right:10px;background:#a084e8;color:#fff;border:none;border-radius:50%;width:36px;height:36px;font-size:1.5rem;cursor:pointer;z-index:10;">&times;</button>
+      <iframe id="mp-iframe" style="width:100%;height:70%;border-radius:12px;border:none;margin-bottom:12px;background:#222;" allowfullscreen></iframe>
+      <div style="margin-bottom:8px;">
+        <input type="file" id="upload-gltf" accept=".gltf,.glb" style="margin-right:8px;">
+        <label for="upload-gltf">Upload 3D Model (GLTF/GLB)</label>
+        <input type="file" id="upload-image" accept="image/*" style="margin-left:24px;margin-right:8px;">
+        <label for="upload-image">Upload Image (for wall)</label>
+      </div>
+      <div style="color:#fff;font-size:0.95rem;margin-bottom:8px;">Click in the 3D view to place your uploaded model or image.</div>
+      <div id="furniture-modal-msg" style="color:#ffe066;font-size:0.95rem;"></div>
+    </div>
+  </div>
+
+  <script src="wizard.js"></script>
+  <script src="https://static.matterport.com/showcase-sdk/latest/sdk.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+</body>
+</html> 
