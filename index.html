@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dream Home Builder Wizard</title>
+  <title>Dream Home Builder Wizard - Fox Certified Contractors</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="centered" id="welcome-screen">
@@ -17,27 +18,51 @@
 
   <!-- Wizard Steps -->
   <div class="wizard-step" id="step-style">
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 20%"></div>
+    </div>
     <div class="wizard-title">Choose Your Architectural Style</div>
+    <div class="wizard-desc">Select the architectural style that best matches your vision and lifestyle.</div>
     <div class="wizard-options" id="style-options"></div>
     <button class="wizard-btn" id="to-step-bedrooms">Next</button>
   </div>
+  
   <div class="wizard-step" id="step-bedrooms">
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 40%"></div>
+    </div>
     <div class="wizard-title">How many bedrooms do you need?</div>
+    <div class="wizard-desc">Consider your family size and future needs when selecting the number of bedrooms.</div>
     <div class="wizard-options" id="bedroom-options"></div>
     <button class="wizard-btn" id="to-step-features">Next</button>
   </div>
+  
   <div class="wizard-step" id="step-features">
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 60%"></div>
+    </div>
     <div class="wizard-title">Select Desired Features</div>
+    <div class="wizard-desc">Choose the features that will make your home comfortable and functional for your lifestyle.</div>
     <div class="wizard-options" id="feature-options"></div>
     <button class="wizard-btn" id="to-step-size">Next</button>
   </div>
+  
   <div class="wizard-step" id="step-size">
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 80%"></div>
+    </div>
     <div class="wizard-title">Preferred Home Size</div>
+    <div class="wizard-desc">Select the size range that fits your budget and space requirements.</div>
     <div class="wizard-options" id="size-options"></div>
     <button class="wizard-btn" id="to-step-special">Next</button>
   </div>
+  
   <div class="wizard-step" id="step-special">
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 100%"></div>
+    </div>
     <div class="wizard-title">Any Special Features?</div>
+    <div class="wizard-desc">Add unique features that will make your home truly special and personalized.</div>
     <div class="wizard-options" id="special-options"></div>
     <button class="wizard-btn" id="to-hourglass">See Results</button>
   </div>
@@ -46,32 +71,36 @@
   <div class="wizard-step" id="hourglass-step">
     <div class="wizard-title">Building Your Dream Home Plan...</div>
     <div class="hourglass"><div></div></div>
-    <div style="margin-top:24px;">Personalizing your gallery and estimate. Please wait...</div>
+    <div class="loading-text">Personalizing your gallery and estimate. Please wait...</div>
   </div>
 
   <!-- Gallery Section -->
   <div class="gallery-section" id="gallery-section">
     <div class="wizard-title">Your Personalized Home Gallery</div>
+    <div class="wizard-desc">Browse through homes that match your preferences. Click on any home to explore it in 3D.</div>
     <div id="gallery"></div>
-    <button class="gallery-btn" id="to-address">Continue</button>
+    <button class="gallery-btn" id="to-address">Continue to Property Details</button>
   </div>
 
   <!-- Address/Survey Section -->
   <div class="address-section" id="address-section">
     <div class="wizard-title">Property Details</div>
+    <div class="wizard-desc">Help us understand your property to provide accurate estimates and compliance information.</div>
     <label for="address-input">Enter your property address (Florida only):</label>
     <input type="text" id="address-input" placeholder="123 Main St, Orlando, FL">
-    <div style="margin:12px 0;">or</div>
+    <div style="margin:12px 0; text-align: center; color: #fff; opacity: 0.8;">or</div>
     <label for="survey-upload">Upload a property survey (PDF or image):</label>
     <input type="file" id="survey-upload" accept=".pdf,image/*">
-    <button class="wizard-btn" id="to-estimate">Next</button>
+    <button class="wizard-btn" id="to-estimate">Get Cost Estimate</button>
   </div>
 
   <!-- Estimate Section -->
   <div class="estimate-section" id="estimate-section">
     <div class="wizard-title">Estimated Cost & Draw Schedule</div>
+    <div class="wizard-desc">Based on your selections and Florida building codes, here's your personalized estimate.</div>
     <div id="estimate-output"></div>
-    <button class="gallery-btn" id="to-instructions">How to Get 2D Plans</button>
+    <button class="gallery-btn" id="to-instructions">Download 2D Plans</button>
+    <div id="download-2d-plan-msg" style="margin-top: 16px; font-size: 1rem; font-weight: 500;"></div>
   </div>
 
   <!-- Instructions for Python Integration -->
@@ -88,17 +117,22 @@
   </div>
 
   <!-- Furniture Placement Modal -->
-  <div id="furniture-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(30,20,60,0.98);z-index:1000;align-items:center;justify-content:center;flex-direction:column;">
-    <div style="max-width:900px;width:95vw;height:90vh;position:relative;display:flex;flex-direction:column;align-items:center;">
-      <button id="close-furniture-modal" style="position:absolute;top:10px;right:10px;background:#a084e8;color:#fff;border:none;border-radius:50%;width:36px;height:36px;font-size:1.5rem;cursor:pointer;z-index:10;">&times;</button>
+  <div id="furniture-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);z-index:1000;align-items:center;justify-content:center;flex-direction:column;">
+    <div style="max-width:900px;width:95vw;height:90vh;position:relative;display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,0.95);border-radius:20px;padding:20px;">
+      <button id="close-furniture-modal" style="position:absolute;top:15px;right:15px;background:linear-gradient(135deg, #667eea, #764ba2);color:#fff;border:none;border-radius:50%;width:40px;height:40px;font-size:1.5rem;cursor:pointer;z-index:10;box-shadow:0 4px 15px rgba(0,0,0,0.2);">&times;</button>
+      <h3 style="margin-bottom:20px;color:#333;">Customize Your 3D Space</h3>
       <iframe id="mp-iframe" style="width:100%;height:70%;border-radius:12px;border:none;margin-bottom:12px;background:#222;" allowfullscreen></iframe>
-      <div style="margin-bottom:8px;">
-        <input type="file" id="upload-gltf" accept=".gltf,.glb" style="margin-right:8px;">
-        <label for="upload-gltf">Upload 3D Model (GLTF/GLB)</label>
-        <input type="file" id="upload-image" accept="image/*" style="margin-left:24px;margin-right:8px;">
-        <label for="upload-image">Upload Image (for wall)</label>
+      <div style="margin-bottom:8px;display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="file" id="upload-gltf" accept=".gltf,.glb" style="margin-right:8px;">
+          <label for="upload-gltf" style="color:#333;font-weight:500;">Upload 3D Model (GLTF/GLB)</label>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="file" id="upload-image" accept="image/*" style="margin-right:8px;">
+          <label for="upload-image" style="color:#333;font-weight:500;">Upload Image (for wall)</label>
+        </div>
       </div>
-      <div style="color:#fff;font-size:0.95rem;margin-bottom:8px;">Click in the 3D view to place your uploaded model or image.</div>
+      <div style="color:#333;font-size:0.95rem;margin-bottom:8px;">Click in the 3D view to place your uploaded model or image.</div>
       <div id="furniture-modal-msg" style="color:#ffe066;font-size:0.95rem;"></div>
     </div>
   </div>
