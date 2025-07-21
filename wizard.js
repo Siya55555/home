@@ -337,21 +337,80 @@ function clearWizardState() {
 
 // --- Helper Functions ---
 function showStep(id) {
-  document.querySelectorAll('.wizard-step, .gallery-section, .estimate-section, .address-section').forEach(el => el.classList.remove('active'));
-  const el = document.getElementById(id);
-  if (el) el.classList.add('active');
+  // Add fade out animation to current active step
+  const currentActive = document.querySelector('.wizard-step.active, .gallery-section.active, .estimate-section.active, .address-section.active');
+  if (currentActive) {
+    currentActive.style.opacity = '0';
+    currentActive.style.transform = 'translateY(-20px)';
+    setTimeout(() => {
+      currentActive.classList.remove('active');
+      currentActive.style.opacity = '';
+      currentActive.style.transform = '';
+    }, 300);
+  }
+  
+  // Show new step with fade in animation
+  setTimeout(() => {
+    const newStep = document.getElementById(id);
+    if (newStep) {
+      newStep.classList.add('active');
+      newStep.style.opacity = '0';
+      newStep.style.transform = 'translateY(20px)';
+      
+      setTimeout(() => {
+        newStep.style.opacity = '1';
+        newStep.style.transform = 'translateY(0)';
+      }, 50);
+    }
+  }, 300);
+  
   window.scrollTo(0,0);
+  
+  // Update progress bar if it exists
+  updateProgressBar(id);
+}
+
+function updateProgressBar(stepId) {
+  const progressMap = {
+    'step-style': 20,
+    'step-bedrooms': 40,
+    'step-features': 60,
+    'step-size': 80,
+    'step-special': 100
+  };
+  
+  const progress = progressMap[stepId];
+  if (progress) {
+    const progressFill = document.querySelector('.progress-fill');
+    if (progressFill) {
+      progressFill.style.width = progress + '%';
+    }
+  }
 }
 function renderOptions(containerId, options, multi=false, selected=[]) {
   const container = document.getElementById(containerId);
   container.innerHTML = '';
+  
   options.forEach(opt => {
     const card = document.createElement('div');
     card.className = 'option-card';
+    
     if (multi && selected.includes(opt.value)) card.classList.add('selected');
     if (!multi && selected === opt.value) card.classList.add('selected');
-    card.innerHTML = `<div class="option-title">${opt.title}</div><div class="option-desc">${opt.desc}</div>`;
+    
+    card.innerHTML = `
+      <div class="option-title">${opt.title}</div>
+      <div class="option-desc">${opt.desc}</div>
+      ${multi ? '<div class="selection-indicator">✓</div>' : ''}
+    `;
+    
     card.onclick = () => {
+      // Add click animation
+      card.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        card.style.transform = '';
+      }, 150);
+      
       if (multi) {
         if (selected.includes(opt.value)) {
           selected = selected.filter(v => v !== opt.value);
@@ -364,8 +423,10 @@ function renderOptions(containerId, options, multi=false, selected=[]) {
         renderOptions(containerId, options, multi, selected);
       }
     };
+    
     container.appendChild(card);
   });
+  
   return () => selected;
 }
 
@@ -568,17 +629,25 @@ function showEstimate() {
 
 async function download2DPlan() {
   const msg = document.getElementById('download-2d-plan-msg');
+  const btn = document.getElementById('to-instructions');
+  
+  // Show loading state
+  btn.textContent = 'Generating...';
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
   msg.textContent = 'Generating 2D plan... please wait.';
+  
   try {
     const response = await fetch('http://127.0.0.1:5000/generate-plan', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model_id: selectedModel.id })
     });
+    
     if (!response.ok) {
-      msg.textContent = 'Error generating 2D plan.';
-      return;
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
+    
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -588,9 +657,33 @@ async function download2DPlan() {
     a.click();
     a.remove();
     window.URL.revokeObjectURL(url);
-    msg.textContent = '2D plan downloaded!';
+    
+    // Show success state
+    msg.textContent = '✅ 2D plan downloaded successfully!';
+    msg.style.color = '#4CAF50';
+    btn.textContent = 'Download 2D Plans';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    
+    // Reset message after 3 seconds
+    setTimeout(() => {
+      msg.textContent = '';
+      msg.style.color = '';
+    }, 3000);
+    
   } catch (e) {
-    msg.textContent = 'Error generating 2D plan.';
+    console.error('Download error:', e);
+    msg.textContent = `❌ Error generating 2D plan: ${e.message}`;
+    msg.style.color = '#f44336';
+    btn.textContent = 'Try Again';
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    
+    // Reset message after 5 seconds
+    setTimeout(() => {
+      msg.textContent = '';
+      msg.style.color = '';
+    }, 5000);
   }
 }
 document.getElementById('to-instructions').onclick = () => {
